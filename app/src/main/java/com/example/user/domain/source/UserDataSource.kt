@@ -4,5 +4,5 @@ import com.example.user.data.remote.response.UserResponse
 
 interface UserDataSource {
 
-    suspend fun getUsers(page: Int): List<UserResponse>
+    suspend fun getUsers(limit: Int, itemCount: Int): List<UserResponse>
 }
