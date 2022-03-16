@@ -1,6 +1,6 @@
 package com.example.user.di
 
-import com.example.user.presentation.UserListViewModel
+import com.example.user.presentation.user.UserListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 

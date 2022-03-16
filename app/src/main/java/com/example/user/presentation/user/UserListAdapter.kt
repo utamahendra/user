@@ -1,4 +1,4 @@
-package com.example.user.presentation
+package com.example.user.presentation.user
 
 import android.view.View
 import android.view.ViewGroup
