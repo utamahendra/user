@@ -12,3 +12,8 @@ object Timeout {
 object BroadcastAction {
     const val ACTION_SESSION_EXPIRED = "ACTION_SESSION_EXPIRED"
 }
+
+object DateFormat {
+    const val SERVER_TIME = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+    const val DATE_FORMAT_WITHOUT_TIME = "dd MMMM yyyy"
+}

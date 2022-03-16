@@ -3,16 +3,20 @@ package com.example.user.presentation
 import android.os.Bundle
 import android.widget.Toast
 import com.example.user.R
+import com.example.user.common.DateFormat
 import com.example.user.common.ErrorCode
 import com.example.user.common.PaginationListener
 import com.example.user.common.base.BaseActivity
 import com.example.user.common.extension.gone
 import com.example.user.common.extension.setSingleClickListener
+import com.example.user.common.extension.toDateFormat
 import com.example.user.common.extension.visible
 import com.example.user.common.viewbinding.viewBinding
 import com.example.user.common.viewstate.PaginationViewState
+import com.example.user.common.viewstate.ViewState
 import com.example.user.databinding.ActivityUserListBinding
 import com.example.user.domain.model.UserData
+import com.example.user.domain.model.UserDetailData
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class UserListActivity : BaseActivity() {
@@ -43,8 +47,8 @@ class UserListActivity : BaseActivity() {
     }
 
     private fun initListener() {
-        adapter.setItemClickListener { _, _, _ ->
-
+        adapter.setItemClickListener { _, data, _ ->
+            viewModel.getUserDetail(data?.username.orEmpty())
         }
 
         binding.rvUsers.addOnScrollListener(paginationListener)
@@ -59,6 +63,25 @@ class UserListActivity : BaseActivity() {
     }
 
     private fun startObservingData() {
+        viewModel.userDetailState.observe(this) { state ->
+            when (state) {
+                is ViewState.Loading -> {
+                    hideError()
+                    showLoadingUserDetail()
+                }
+
+                is ViewState.Error -> {
+                    hideLoadingUserDetail()
+                    showErrorToast()
+                }
+
+                is ViewState.Success -> {
+                    hideLoadingUserDetail()
+                    showUserDetail(state.data)
+                }
+            }
+        }
+
         viewModel.userState.observe(this) { state ->
             when (state) {
                 is PaginationViewState.Loading -> {
@@ -73,8 +96,8 @@ class UserListActivity : BaseActivity() {
                     hidePaginationLoading()
                     when (state) {
                         is PaginationViewState.Success -> bindView(state.data, state.isLastPage)
-                        is PaginationViewState.Error -> showError(state.viewError?.errorCode.toString())
-                        is PaginationViewState.PaginationError -> showPaginationError()
+                        is PaginationViewState.Error -> showError(state.viewError?.errorCode.toString()) { viewModel.getUsers() }
+                        is PaginationViewState.PaginationError -> showErrorToast()
                         is PaginationViewState.EmptyData -> showEmpty()
                     }
                 }
@@ -106,7 +129,7 @@ class UserListActivity : BaseActivity() {
         adapter.hideLoadingFooter()
     }
 
-    private fun showError(errorCode: String) {
+    private fun showError(errorCode: String, action: () -> Unit) {
         binding.srlUsers.gone()
         when(errorCode) {
             ErrorCode.GLOBAL_INTERNET_ERROR -> {
@@ -118,7 +141,7 @@ class UserListActivity : BaseActivity() {
             }
         }
         binding.viewError.btnRetry.visible()
-        binding.viewError.btnRetry.setSingleClickListener { viewModel.getUsers() }
+        binding.viewError.btnRetry.setSingleClickListener { action.invoke() }
         binding.viewError.viewErrorContainer.visible()
     }
 
@@ -144,7 +167,22 @@ class UserListActivity : BaseActivity() {
         if (isLastPages) adapter.hideLoadingFooter()
     }
 
-    private fun showPaginationError() {
+    private fun showErrorToast() {
         Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showLoadingUserDetail() {
+        binding.pbLoading.visible()
+        binding.srlUsers.gone()
+    }
+
+    private fun hideLoadingUserDetail() {
+        binding.pbLoading.gone()
+        binding.srlUsers.visible()
+    }
+
+    private fun showUserDetail(data: UserDetailData) {
+        Toast.makeText(this, "name: ${data.name}, email: ${data.email}, createdAt: ${data.createdAt.toDateFormat(
+            DateFormat.SERVER_TIME, DateFormat.DATE_FORMAT_WITHOUT_TIME)}", Toast.LENGTH_LONG).show()
     }
 }
