@@ -22,7 +22,7 @@ class UserApp: Application() {
             androidContext(this@UserApp)
             modules(
                 arrayListOf(
-                    appModule, viewModelModule, repositoryModule, networkModule, useCaseModule
+                    appModule, viewModelModule, useCaseModule, repositoryModule, networkModule
                 )
             )
         }

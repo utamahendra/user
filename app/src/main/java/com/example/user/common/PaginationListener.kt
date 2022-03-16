@@ -4,7 +4,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class PaginationListener(
-    private val loadMoreAction: () -> Unit
+    private val paginationLimit: Int,
+    private val loadMoreAction: (itemCount: Int) -> Unit
 ) :
     RecyclerView.OnScrollListener() {
     var isLastPage: Boolean = false
@@ -13,7 +14,7 @@ class PaginationListener(
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         super.onScrolled(recyclerView, dx, dy)
         if ((recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == itemCount && !isLastPage && dy > 0) {
-            loadMoreAction.invoke()
+            loadMoreAction.invoke(itemCount)
         }
     }
 }

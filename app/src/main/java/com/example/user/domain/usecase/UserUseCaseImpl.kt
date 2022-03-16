@@ -3,12 +3,12 @@ package com.example.user.domain.usecase
 import com.example.user.common.extension.asErrorObject
 import com.example.user.common.viewstate.ViewError
 import com.example.user.data.remote.response.UserResponse
-import com.example.user.data.repository.UserRepository
 import com.example.user.domain.Either
 import com.example.user.domain.model.UserData
 import com.example.user.domain.model.UserParam
+import com.example.user.domain.source.UserDataSource
 
-class UserUseCaseImpl(private val repository: UserRepository): UserUseCase {
+class UserUseCaseImpl(private val repository: UserDataSource): UserUseCase {
 
     override suspend fun invoke(params: UserParam): Either<List<UserData>, ViewError> {
         return try {

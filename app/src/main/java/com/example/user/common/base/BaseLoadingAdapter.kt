@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import com.example.user.R
 import com.example.user.common.extension.gone
 import com.example.user.common.extension.visible
 
@@ -81,7 +82,7 @@ abstract class BaseLoadingAdapter<T> : BaseAdapter<T, BaseHolder<T>>() {
         listener: (position: Int, T?, viewId: Int) -> Unit = { _, _, _ -> }
     ) : BaseHolder<T>(listener, itemView) {
         init {
-            //pbLoading = itemView.findViewById(R.id.pbLoading)
+            pbLoading = itemView.findViewById(R.id.pb_loading)
         }
 
         fun bind() {

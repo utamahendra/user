@@ -32,9 +32,9 @@ class UserListViewModel(private val userUseCase: UserUseCase) : ViewModel() {
                 if (users.isEmpty()) userState.postValue(
                     PaginationViewState.EmptyData(Unit)
                 ) else {
-                    PaginationViewState.Success(
+                    userState.postValue(PaginationViewState.Success(
                         users,
-                        (users.isEmpty() || users.size < USER_LIMIT)
+                        (users.isEmpty() || users.size < USER_LIMIT))
                     )
                 }
             },
